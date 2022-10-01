@@ -1,12 +1,18 @@
-import 'dart:convert';
-
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:project_inception/utilities/constants.dart';
 
 class Read extends StatefulWidget {
-  final title;
-  Read({required this.title});
+  final String title;
+  final bool isDownloaded;
+  final Directory dir;
+  const Read(
+      {Key? key,
+      required this.title,
+      required this.isDownloaded,
+      required this.dir})
+      : super(key: key);
 
   @override
   _ReadState createState() => _ReadState();
@@ -14,10 +20,14 @@ class Read extends StatefulWidget {
 
 class _ReadState extends State<Read> {
   late String title;
+  late bool isDownloaded;
+  late File file;
 
   @override
-  void initState() {
+  initState() {
     title = widget.title;
+    isDownloaded = widget.isDownloaded;
+    file = File(widget.dir.path + '/' + title);
     super.initState();
   }
 
@@ -28,12 +38,14 @@ class _ReadState extends State<Read> {
         backgroundColor: primaryColor,
         foregroundColor: backgroundColor,
         title: Text(
-          title,
+          title.substring(0, widget.title.length - 4),
           style: appBarStyle,
         ),
       ),
-      body: SfPdfViewer.network(
-          'https://projectinception.000webhostapp.com/books/test1.pdf'),
+      body: isDownloaded
+          ? SfPdfViewer.file(file)
+          : SfPdfViewer.network(
+              'https://toopasty.com.ng/inception/books/$title'),
     );
   }
 }

@@ -1,9 +1,13 @@
-import 'dart:async';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'package:project_inception/screens/explore.dart';
+import 'package:project_inception/screens/home.dart';
 import 'package:project_inception/utilities/constants.dart';
 import 'package:project_inception/screens/login.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
+import 'dart:math';
 
 class LandingPage extends StatefulWidget {
   const LandingPage({Key? key}) : super(key: key);
@@ -13,20 +17,42 @@ class LandingPage extends StatefulWidget {
 }
 
 class _LandingPageState extends State<LandingPage> {
-  late int? isLoggedIn;
-
   checkSF() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    if (preferences.containsKey('username')) {
+    if (preferences.containsKey('matric')) {
       isLoggedIn = 1;
     } else {
       isLoggedIn = null;
     }
   }
 
+  late File jsonFile;
+  String fileName = 'downloads.json';
+  bool fileExists = false;
+
+  checkFile() async {
+    Directory dir = await getApplicationDocumentsDirectory();
+    jsonFile = File(dir.path + '/' + fileName);
+    fileExists = await jsonFile.exists();
+    if (fileExists) {
+      tempDownload = json.decode(await jsonFile.readAsString());
+    } else if (!fileExists) {
+      // jsonFile.create();
+      tempDownload = [];
+      // tempDownload.add(downloads);
+      jsonFile.writeAsString(jsonEncode(tempDownload));
+      fileExists = await jsonFile.exists();
+    }
+  }
+
+  Random random = Random();
+  late int randomNumber;
+
   @override
   void initState() {
+    randomNumber = random.nextInt(3);
     checkSF();
+    checkFile();
     super.initState();
   }
 
@@ -44,7 +70,7 @@ class _LandingPageState extends State<LandingPage> {
                 image: DecorationImage(
                     colorFilter: ColorFilter.mode(
                         Colors.black.withOpacity(0.2), BlendMode.luminosity),
-                    image: const AssetImage('images/land2.jpg'),
+                    image: AssetImage('images/land$randomNumber.jpg'),
                     fit: BoxFit.cover),
               ),
               // margin: EdgeInsets.fromLTRB(20, 10, 20, 5),
@@ -86,7 +112,7 @@ class _LandingPageState extends State<LandingPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Image.asset(
-                      "images/logo.png",
+                      "assets/logo.png",
                       height: 40,
                     ),
                     const Flexible(
@@ -94,7 +120,7 @@ class _LandingPageState extends State<LandingPage> {
                         '  MACOSA E-Library',
                         style: TextStyle(
                             color: Colors.black,
-                            fontSize: 30,
+                            fontSize: 25,
                             fontWeight: FontWeight.bold),
                       ),
                     ),
@@ -136,14 +162,14 @@ class _LandingPageState extends State<LandingPage> {
                                     MaterialPageRoute(builder: (context) {
                                     return Explore();
                                   }))
-                                : Navigator.push(context,
+                                : Navigator.pushReplacement(context,
                                     MaterialPageRoute(builder: (context) {
                                     return const Login();
                                   }));
                           },
                           child: const Text(
                             'Start Reading',
-                            style: TextStyle(color: Colors.white, fontSize: 20),
+                            style: TextStyle(color: Colors.white, fontSize: 18),
                           ),
                         ),
                       ),
