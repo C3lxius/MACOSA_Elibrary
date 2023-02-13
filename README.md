@@ -1,16 +1,17 @@
-# project_inception
+# Project_Inception
 
-KWASU MACOSA digital library app
+A digital library application for Mass Communications department of the Kwara State University.
 
-## Getting Started
+## Features
 
-This project is a starting point for a Flutter application.
+This is a project commisioned by the Kwara State University. Features Include:
 
-A few resources to get you started if this is your first Flutter project:
+Ebook(PDF & EPUB) Reader
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+Archive for Departmental Files
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Image Gallery and Viewer
+
+Audio Player
+
+Video Player
